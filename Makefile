@@ -14,7 +14,6 @@ CFLAGS += -std=gnu11
 CFLAGS += \
 	-Wall \
 	-Wextra \
-	-Werror \
 	-Wno-unused-parameter \
 	-Wformat-security \
 	-Wformat-nonliteral \
