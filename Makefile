@@ -44,28 +44,31 @@ endif
 
 GCC_VERSION = 4.9
 
-PLATFORM_TARGET_VERSION=21
-PLATFORM_TARGET_ARCH=arm
+PLATFORM_TARGET_VERSION=27
+PLATFORM_TARGET_ARCH=arm64
 
-TOOLCHAIN = $(ANDROID_NDK)/toolchains/arm-linux-androideabi-$(GCC_VERSION)
+TOOLCHAIN = $(ANDROID_NDK)/toolchains/aarch64-linux-android-$(GCC_VERSION)
 TARGET_PLATFORM = $(ANDROID_NDK)/platforms/android-$(PLATFORM_TARGET_VERSION)
-SYSROOT = $(TARGET_PLATFORM)/arch-$(PLATFORM_TARGET_ARCH)
+SYSROOT_LD = $(TARGET_PLATFORM)/arch-$(PLATFORM_TARGET_ARCH)
+SYSROOT = $(ANDROID_NDK)/sysroot
 
-CC = $(TOOLCHAIN)/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc
-
+CC = $(TOOLCHAIN)/prebuilt/linux-x86_64/bin/aarch64-linux-android-gcc
+TRIPLE = aarch64-linux-android
+CFLAGS += -isystem $(SYSROOT)/usr/include/$(TRIPLE)
+CFLAGS += -D__ANDROID_API__=$(PLATFORM_TARGET_VERSION)
 CFLAGS += -fdiagnostics-color=auto
 CFLAGS += -fpic -fPIE
 CFLAGS += -no-canonical-prefixes
-CFLAGS += -march=armv7-a -mthumb
 
 CPPFLAGS += -I$(SYSROOT)/usr/include
+CPPFLAGS += -I$(SYSROOT)/usr/include/$(TRIPLE)
 CPPFLAGS += -DANDROID
 
-LDFLAGS += -march=armv7-a -fPIE -pie -mthumb
-LDFLAGS += --sysroot=$(SYSROOT) -L$(SYSROOT)/usr/lib
-LDFLAGS += -Wl,-rpath-link=$(SYSROOT)/usr/lib -Wl,-rpath-link=$(OUT)
+LDFLAGS += -fPIE -pie
+LDFLAGS += --sysroot=$(SYSROOT_LD) -L$(SYSROOT_LD)/usr/lib
+LDFLAGS += -Wl,-rpath-link=$(SYSROOT_LD)/usr/lib -Wl,-rpath-link=$(OUT)
 LDFLAGS += -Wl,--gc-sections -Wl,-z,nocopyreloc -no-canonical-prefixes
-LDFLAGS += -Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,-z,noexecstack
+LDFLAGS += -Wl,--no-undefined -Wl,-z,noexecstack
 LDFLAGS += -Wl,-z,relro -Wl,-z,now
 endif  # TARGET == ANDROID
 
