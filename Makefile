@@ -10,7 +10,7 @@ OUT = out
 DEPDIR = $(OUT)/deps
 GENDIR = $(OUT)/gen
 
-CFLAGS += -std=c11
+CFLAGS += -std=gnu11
 CFLAGS += \
 	-Wall \
 	-Wextra \
